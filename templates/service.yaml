@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "calibre-web.fullname" . }}
+  labels:
+    app: {{ template "calibre-web.name" . }}
+    chart: {{ template "calibre-web.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "calibre-web.name" . }}
+    release: {{ .Release.Name }}
