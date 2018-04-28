@@ -9,8 +9,6 @@ image:
   tag: v1.1.11
   pullPolicy: IfNotPresent
 
-args: []
-
 env: []
 # - name: USE_CONFIG_DIR
 #   value: "true"
@@ -67,6 +65,14 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 15
+  timeoutSeconds: 1
+  periodSeconds: 15
 
 nodeSelector: {}
 

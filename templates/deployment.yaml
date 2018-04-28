@@ -19,32 +19,49 @@ spec:
         app: {{ template "calibre-web.name" . }}
         release: {{ .Release.Name }}
     spec:
+      initContainers:
+        - name: get-or-update
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+{{ toYaml .Values.env | indent 12 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: init
+              mountPath: /init/launch.sh # no launch
+              subPath: no_launch.sh
+{{ toYaml .Values.volumeMounts | indent 12 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-{{ toYaml .Values.args | indent 12 }}
           env:
 {{ toYaml .Values.env | indent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          # TODO
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
+            - name: init
+              mountPath: /init/get_or_update.sh # no get or update
+              subPath: no_get_or_update.sh
 {{ toYaml .Values.volumeMounts | indent 12 }}
       volumes:
+        - name: init
+          configMap:
+            name: {{ template "calibre-web.fullname" . }}
+            items:
+            - key: no_get_or_update.sh
+              path: no_get_or_update.sh
+              mode: 0755
+            - key: no_launch.sh
+              path: no_launch.sh
+              mode: 0755
 {{ toYaml .Values.volumes | indent 8 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:

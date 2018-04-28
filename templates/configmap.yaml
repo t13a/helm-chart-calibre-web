@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "calibre-web.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "calibre-web.fullname" . }}
+data:
+  no_get_or_update.sh: |
+    #!/bin/sh
+    echo "[INFO] No get or update"
+  no_launch.sh: |
+    #!/bin/sh
+    echo "[INFO] No launch"

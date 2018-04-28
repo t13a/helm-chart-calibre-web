@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "v1.1.11"
 description: Calibre Web
 name: calibre-web
-version: 0.1.0
+version: 0.2.0
